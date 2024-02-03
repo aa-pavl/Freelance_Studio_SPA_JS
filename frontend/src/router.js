@@ -1,4 +1,6 @@
-import {Dashboard} from "./components/dashboard.js";
+import {Dashboard} from "./components/dashboard";
+import {Login} from "./components/login";
+import {Signup} from "./components/signup";
 
 export class Router {
 
@@ -26,7 +28,7 @@ export class Router {
                 title: 'Авторизация',
                 filePathTemplate: '/templates/login.html',
                 load: () => {
-                    new Dashboard();
+                    new Login();
                 },
             },
             {
@@ -34,7 +36,7 @@ export class Router {
                 title: 'Регистрация',
                 filePathTemplate: '/templates/signup.html',
                 load: () => {
-                    new Dashboard();
+                    new Signup();
                 },
             },
         ];
@@ -57,6 +59,9 @@ export class Router {
             }
             if (newRout.filePathTemplate) {
                 this.contentPageElement.innerHTML = await fetch(newRout.filePathTemplate).then(response => response.text());
+            }
+            if (newRout.load && typeof newRout.load === "function") {
+                newRout.load();
             }
         } else {
             console.log('No route found');

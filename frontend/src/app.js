@@ -1,5 +1,4 @@
-import {Router} from "./router.js";
-
+import {Router} from "./router";
 
 // формальная точка входа
 class App {
