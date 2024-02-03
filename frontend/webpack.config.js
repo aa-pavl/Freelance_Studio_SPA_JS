@@ -35,6 +35,7 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
+                {from: "./src/static/images", to: "images"},
                 {from: "./src/templates", to: "templates"},
                 {from: "./node_modules/admin-lte/plugins/fontawesome-free/webfonts", to: "webfonts"},
                 {from: "./node_modules/admin-lte/plugins/fontawesome-free/css/all.min.css", to: "css"},
