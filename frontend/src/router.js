@@ -14,6 +14,7 @@ export class Router {
                 route: '/',
                 title: 'Дашборд',
                 filePathTemplate: '/templates/dashboard.html',
+                useLayout: '/templates/layout.html',
                 load: () => {
                     new Dashboard();
                 },
@@ -22,11 +23,13 @@ export class Router {
                 route: '/404',
                 title: 'Страница не найдена',
                 filePathTemplate: '/templates/404.html',
+                useLayout: false,
             },
             {
                 route: '/login',
                 title: 'Авторизация',
                 filePathTemplate: '/templates/login.html',
+                useLayout: false,
                 load: () => {
                     new Login();
                 },
@@ -35,6 +38,7 @@ export class Router {
                 route: '/signup',
                 title: 'Регистрация',
                 filePathTemplate: '/templates/signup.html',
+                useLayout: false,
                 load: () => {
                     new Signup();
                 },
@@ -57,8 +61,18 @@ export class Router {
             if (newRout.title) {
                 this.titlePageElement.innerText = newRout.title + ' | Freelance Studio';
             }
+            let contentBlock = this.contentPageElement;
             if (newRout.filePathTemplate) {
-                this.contentPageElement.innerHTML = await fetch(newRout.filePathTemplate).then(response => response.text());
+                if (newRout.useLayout) {
+                    this.contentPageElement.innerHTML = await fetch(newRout.useLayout).then(response => response.text());
+                    contentBlock = document.getElementById('content-wrapper');
+                    document.body.classList.add('sidebar-mini');
+                    document.body.classList.add('layout-fixed');
+                } else {
+                    document.body.classList.remove('sidebar-mini');
+                    document.body.classList.remove('layout-fixed');
+                }
+                contentBlock.innerHTML = await fetch(newRout.filePathTemplate).then(response => response.text());
             }
             if (newRout.load && typeof newRout.load === "function") {
                 newRout.load();
