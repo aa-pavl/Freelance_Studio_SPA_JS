@@ -64,7 +64,7 @@ export class Router {
         document.addEventListener('click', this.openNewRoute.bind(this));
     }
 
-    openNewRoute(e) {
+    async openNewRoute(e) {
         // console.log(e.target);
         let element = null;
         if (e.target.nodeName === "A") {
@@ -81,12 +81,22 @@ export class Router {
                 return;
             }
 
-            
+            const curRoute= window.location.pathname;
+            history.pushState({}, '', url);
+            await this.activateRoute(null, curRoute);
             console.log('Process', url);
         }
     }
 
-    async activateRoute() {
+    async activateRoute(e, oldRoute = null) {
+        if (oldRoute) {
+            const  prevRoute = this.routes.find(item => item.route === oldRoute);
+            prevRoute.styles.forEach(style => {
+                document.querySelector(`link[href='/css/${style}']`).remove();
+            });
+        }
+
+
         const urlRoute = window.location.pathname;
         const newRout = this.routes.find(item => item.route === urlRoute);
 
@@ -122,8 +132,8 @@ export class Router {
             }
         } else {
             console.log('No route found');
-            window.location = '/404';
+            history.pushState({}, '',  '/404');
+            await this.activateRoute();
         }
     }
-
 }
