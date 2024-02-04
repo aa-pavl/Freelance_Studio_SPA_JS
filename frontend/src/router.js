@@ -37,6 +37,10 @@ export class Router {
                     document.body.style.height = '100vh';
                     new Login();
                 },
+                unload: () => {
+                    document.body.classList.remove('login-page')
+                    document.body.style.height = 'auto';
+                },
                 styles: ['icheck-bootstrap.min.css']
             },
             {
@@ -48,6 +52,10 @@ export class Router {
                     document.body.classList.add('register-page');
                     document.body.style.height = '100vh';
                     new Signup();
+                },
+                unload: () => {
+                    document.body.classList.remove('register-page')
+                    document.body.style.height = 'auto';
                 },
                 styles: ['icheck-bootstrap.min.css']
             },
@@ -94,6 +102,10 @@ export class Router {
             prevRoute.styles.forEach(style => {
                 document.querySelector(`link[href='/css/${style}']`).remove();
             });
+
+            if (prevRoute.unload && typeof prevRoute.unload === "function") {
+                prevRoute.unload();
+            }
         }
 
 
@@ -114,7 +126,6 @@ export class Router {
                 this.titlePageElement.innerText = newRout.title + ' | Freelance Studio';
             }
             if (newRout.filePathTemplate) {
-                document.body.className = "";
                 let contentBlock = this.contentPageElement;
                 if (newRout.useLayout) {
                     this.contentPageElement.innerHTML = await fetch(newRout.useLayout).then(response => response.text());
