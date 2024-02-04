@@ -2,6 +2,7 @@ import {Dashboard} from "./components/dashboard";
 import {Login} from "./components/login";
 import {Signup} from "./components/signup";
 import win from "admin-lte/plugins/uplot/uPlot.esm";
+import pre from "admin-lte/plugins/uplot/uPlot.esm";
 
 export class Router {
 
@@ -89,7 +90,7 @@ export class Router {
                 return;
             }
 
-            const curRoute= window.location.pathname;
+            const curRoute = window.location.pathname;
             history.pushState({}, '', url);
             await this.activateRoute(null, curRoute);
             console.log('Process', url);
@@ -98,11 +99,12 @@ export class Router {
 
     async activateRoute(e, oldRoute = null) {
         if (oldRoute) {
-            const  prevRoute = this.routes.find(item => item.route === oldRoute);
-            prevRoute.styles.forEach(style => {
-                document.querySelector(`link[href='/css/${style}']`).remove();
-            });
-
+            const prevRoute = this.routes.find(item => item.route === oldRoute);
+            if (prevRoute.styles && prevRoute.styles.length > 0) {
+                prevRoute.styles.forEach(style => {
+                    document.querySelector(`link[href='/css/${style}']`).remove();
+                });
+            }
             if (prevRoute.unload && typeof prevRoute.unload === "function") {
                 prevRoute.unload();
             }
@@ -143,7 +145,7 @@ export class Router {
             }
         } else {
             console.log('No route found');
-            history.pushState({}, '',  '/404');
+            history.pushState({}, '', '/404');
             await this.activateRoute();
         }
     }
