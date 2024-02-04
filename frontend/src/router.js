@@ -1,6 +1,7 @@
 import {Dashboard} from "./components/dashboard";
 import {Login} from "./components/login";
 import {Signup} from "./components/signup";
+import win from "admin-lte/plugins/uplot/uPlot.esm";
 
 export class Router {
 
@@ -58,6 +59,31 @@ export class Router {
         window.addEventListener('DOMContentLoaded', this.activateRoute.bind(this));
         // переход на др.стр. (изменение URL)
         window.addEventListener('popstate', this.activateRoute.bind(this));
+
+        // создаем функцию отслеживаничя любого клика по странице (fix bug перезагрузки приложения для каждой стр.)
+        document.addEventListener('click', this.openNewRoute.bind(this));
+    }
+
+    openNewRoute(e) {
+        // console.log(e.target);
+        let element = null;
+        if (e.target.nodeName === "A") {
+            element = e.target;
+        } else if (e.target.parentNode.nodeName === 'A') {
+            element = e.target.parentNode;
+        }
+
+        if (element) {
+            e.preventDefault();
+
+            const url = element.href.replace(window.location.origin, '');
+            if (!url || url === '/#' || url.startsWith('javascript:void(0)')) {
+                return;
+            }
+
+            
+            console.log('Process', url);
+        }
     }
 
     async activateRoute() {
