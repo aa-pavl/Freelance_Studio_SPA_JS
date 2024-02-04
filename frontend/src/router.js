@@ -7,6 +7,7 @@ export class Router {
     constructor() {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
+        this.adminStyleElement = document.getElementById('admin_style');
 
         this.initEvents();
         this.routes = [
@@ -31,8 +32,11 @@ export class Router {
                 filePathTemplate: '/templates/login.html',
                 useLayout: false,
                 load: () => {
+                    document.body.classList.add('login-page');
+                    document.body.style.height = '100vh';
                     new Login();
                 },
+                styles: ['icheck-bootstrap.min.css']
             },
             {
                 route: '/signup',
@@ -58,11 +62,21 @@ export class Router {
         const newRout = this.routes.find(item => item.route === urlRoute);
 
         if (newRout) {
+            if (newRout.styles && newRout.styles.length > 0) {
+                newRout.styles.forEach(style => {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = '/css/' + style;
+
+                    document.head.insertBefore(link, this.adminStyleElement);
+                });
+            }
             if (newRout.title) {
                 this.titlePageElement.innerText = newRout.title + ' | Freelance Studio';
             }
-            let contentBlock = this.contentPageElement;
             if (newRout.filePathTemplate) {
+                document.body.className = "";
+                let contentBlock = this.contentPageElement;
                 if (newRout.useLayout) {
                     this.contentPageElement.innerHTML = await fetch(newRout.useLayout).then(response => response.text());
                     contentBlock = document.getElementById('content-wrapper');
