@@ -1,8 +1,7 @@
 import {Dashboard} from "./components/dashboard";
 import {Login} from "./components/login";
 import {Signup} from "./components/signup";
-import win from "admin-lte/plugins/uplot/uPlot.esm";
-import pre from "admin-lte/plugins/uplot/uPlot.esm";
+import {Logout} from "./components/logout";
 
 export class Router {
 
@@ -36,7 +35,7 @@ export class Router {
                 load: () => {
                     document.body.classList.add('login-page');
                     document.body.style.height = '100vh';
-                    new Login();
+                    new Login(this.openNewRoute.bind(this));
                 },
                 unload: () => {
                     document.body.classList.remove('login-page')
@@ -52,7 +51,7 @@ export class Router {
                 load: () => {
                     document.body.classList.add('register-page');
                     document.body.style.height = '100vh';
-                    new Signup();
+                    new Signup(this.openNewRoute.bind(this));
                 },
                 unload: () => {
                     document.body.classList.remove('register-page')
@@ -60,6 +59,12 @@ export class Router {
                 },
                 styles: ['icheck-bootstrap.min.css']
             },
+            {
+                route: '/logout',
+                load: () => {
+                    new Logout(this.openNewRoute.bind(this));
+                }
+            }
         ];
     }
 

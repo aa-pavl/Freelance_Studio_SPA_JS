@@ -1,5 +1,11 @@
 export class Login {
-    constructor() {
+    constructor(openNewRoute) {
+        // this.openNewRoute = openNewRoute;
+        //
+        // if (!localStorage.getItem('accessToken')) {
+        //     return this.openNewRoute('/');
+        // }
+
         this.emailElement = document.getElementById('email');
         this.passwordElement = document.getElementById('password');
         this.rememberMeElement = document.getElementById('remember-me');
@@ -47,14 +53,15 @@ export class Login {
             const result = await responce.json();
             if (result.error || !result.accessToken|| !result.refreshToken|| !result.id|| !result.name) {
                 this.commonErrorElement.style.display = 'block';
+                return;
             }
+            localStorage.setItem('accessToken', result.accessToken);
+            localStorage.setItem('refreshToken', result.refreshToken);
+            localStorage.setItem('userInfo', JSON.stringify({id: result.id, name: result.name}));
 
-            console.log(result);
+            // console.log(result);
         } else {
 
         }
-
-
     }
-
 }
