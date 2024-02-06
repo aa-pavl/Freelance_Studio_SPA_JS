@@ -75,11 +75,11 @@ export class Router {
         window.addEventListener('popstate', this.activateRoute.bind(this));
 
         // создаем функцию отслеживаничя любого клика по странице (fix bug перезагрузки приложения для каждой стр.)
-        document.addEventListener('click', this.openNewRoute.bind(this));
+        document.addEventListener('click', this.clickHandler.bind(this));
     }
 
-    async openNewRoute(e) {
-        // console.log(e.target);
+    async clickHandler(e) {
+        console.log(e.target);
         let element = null;
         if (e.target.nodeName === "A") {
             element = e.target;
@@ -94,12 +94,14 @@ export class Router {
             if (!url || url === '/#' || url.startsWith('javascript:void(0)')) {
                 return;
             }
-
-            const curRoute = window.location.pathname;
-            history.pushState({}, '', url);
-            await this.activateRoute(null, curRoute);
-            console.log('Process', url);
+            await this.openNewRoute(url);
         }
+    }
+
+    async openNewRoute(url) {
+        const curRoute = window.location.pathname;
+        history.pushState({}, '', url);
+        await this.activateRoute(null, curRoute);
     }
 
     async activateRoute(e, oldRoute = null) {
@@ -115,10 +117,8 @@ export class Router {
             }
         }
 
-
         const urlRoute = window.location.pathname;
         const newRout = this.routes.find(item => item.route === urlRoute);
-
         if (newRout) {
             if (newRout.styles && newRout.styles.length > 0) {
                 newRout.styles.forEach(style => {

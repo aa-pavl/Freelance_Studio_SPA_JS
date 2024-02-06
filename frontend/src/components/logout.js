@@ -5,9 +5,8 @@ export class Logout {
         this.openNewRoute = openNewRoute;
 
         if (!localStorage.getItem('accessToken') || !localStorage.getItem('refreshToken')) {
-            return this.openNewRoute('/login');
+            return  this.openNewRoute('/login');
         }
-
         this.logout().then();
     }
 
@@ -26,10 +25,7 @@ export class Logout {
         const result = await responce.json();
         console.log(result);
 
-        localStorage.removeItem(AuthUtils.accessTokenKey);
-        localStorage.removeItem(AuthUtils.refreshTokenKey);
-        localStorage.removeItem(AuthUtils.userInfoKey);
-
+        AuthUtils.removeAuthInfo();
         this.openNewRoute('/login');
     }
 }
