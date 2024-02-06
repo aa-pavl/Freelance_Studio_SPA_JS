@@ -6,10 +6,10 @@
     <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">Зарегистрировать новго пользователчя</p>
-
+            <div id="common-error" class="error invalid-feedback text-center mb-3">Некорретно заполнены поля</div>
             <form>
                 <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Имя">
+                    <input type="text" class="form-control" id="name" placeholder="Имя">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -17,7 +17,15 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Email">
+                    <input type="text" class="form-control" id="lastname" placeholder="Фамилия">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="Email">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
@@ -25,7 +33,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Пароль">
+                    <input type="password" class="form-control" id="password" placeholder="Пароль">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -33,7 +41,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Повторите пароль">
+                    <input type="password" class="form-control" id="password-repeat" placeholder="Повторите пароль">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -52,7 +60,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn btn-primary btn-block">Зарегистрироваться</button>
+                        <button type="button" class="btn btn-primary btn-block" id="process-button">Зарегистрироваться</button>
                     </div>
                 </div>
             </form>

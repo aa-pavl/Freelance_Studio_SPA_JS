@@ -19,7 +19,6 @@ export class Login {
     async login() {
         this.commonErrorElement.style.display = 'none';
         if (this.validateForm()) {
-            console.log(this.emailElement.value)
             const result = await HttpUtils.request('/login', 'POST', {
                 email: this.emailElement.value,
                 password: this.passwordElement.value,
@@ -34,7 +33,6 @@ export class Login {
             }
             AuthUtils.setAuthInfo(res_responce.accessToken, res_responce.refreshToken, {id: res_responce.id, name: res_responce.name})
             this.openNewRoute('/')
-        } else {
         }
     }
 
