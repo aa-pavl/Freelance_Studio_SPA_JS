@@ -3,7 +3,7 @@ import {AuthUtils} from "../utils/auth-utils";
 export class Login {
     constructor(openNewRoute) {
         this.openNewRoute = openNewRoute;
-        if (localStorage.getItem('accessToken')) {
+        if (AuthUtils.getAuthInfo(AuthUtils.accessTokenKey)) {
             return this.openNewRoute('/');
         }
 
