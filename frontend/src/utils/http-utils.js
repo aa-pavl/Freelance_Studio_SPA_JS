@@ -14,6 +14,10 @@ export class HttpUtils {
                 'Accept': 'application/json',
             },
         };
+        if (body) {
+            params.body = JSON.stringify(body);
+        }
+
 
         let responce = null;
         try {
@@ -21,9 +25,6 @@ export class HttpUtils {
             result.responce = await responce.json();
         } catch (e) {
             result.error = true;
-        }
-        if (body) {
-            params.body = JSON.stringify(body);
             return result;
         }
 

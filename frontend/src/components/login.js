@@ -1,4 +1,5 @@
 import {AuthUtils} from "../utils/auth-utils";
+import {HttpUtils} from "../utils/http-utils";
 
 export class Login {
     constructor(openNewRoute) {
@@ -18,24 +19,20 @@ export class Login {
     async login() {
         this.commonErrorElement.style.display = 'none';
         if (this.validateForm()) {
-            const responce = await fetch('http://localhost:3000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: this.emailElement.value,
-                    password: this.passwordElement.value,
-                    rememberMe: this.rememberMeElement.checked,
-                })
-            });
-            const result = await responce.json();
-            if (result.error || !result.accessToken|| !result.refreshToken|| !result.id|| !result.name) {
+            console.log(this.emailElement.value)
+            const result = await HttpUtils.request('/login', 'POST', {
+                email: this.emailElement.value,
+                password: this.passwordElement.value,
+                rememberMe: this.rememberMeElement.checked,
+            })
+
+            const res_responce = result.responce;
+            if (result.error || !res_responce ||
+                (res_responce && (!res_responce.accessToken|| !res_responce.refreshToken|| !res_responce.id|| !res_responce.name))) {
                 this.commonErrorElement.style.display = 'block';
                 return;
             }
-            AuthUtils.setAuthInfo(result.accessToken, result.refreshToken, {id: result.id, name: result.name})
+            AuthUtils.setAuthInfo(res_responce.accessToken, res_responce.refreshToken, {id: res_responce.id, name: res_responce.name})
             this.openNewRoute('/')
         } else {
         }
