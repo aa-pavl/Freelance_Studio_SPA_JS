@@ -1,5 +1,5 @@
 import {HttpUtils} from "../../utils/http-utils";
-import {AuthUtils} from "../../utils/auth-utils";
+import config from "../../config/config";
 
 export class FreelancersList {
     constructor(openNewRoute) {
@@ -22,7 +22,25 @@ export class FreelancersList {
     }
 
     showRecords(freelancers) {
+        const recordsElement = document.getElementById('records');
+        for (let i = 0; i < freelancers.length; i++) {
+            const trElement = document.createElement('tr');
+            trElement.insertCell().innerText = i + 1;
+            trElement.insertCell().innerText = freelancers[i].avatar ?
+                '<img src="' +config.host + freelancers[i].avatar + '" alt = "User Image">' : '';
+            trElement.insertCell().innerText = `${freelancers[i].name} ${freelancers[i].lastName}`;
+            trElement.insertCell().innerText = freelancers[i].email;
 
+            switch (freelancers[i].level) {
+                case config.freelancerLevels.junior:
+                    break;
+                case config.freelancerLevels.middle:
+                    break;
+                case config.freelancerLevels.senior:
+                    break;
+
+            }
+        }
         console.log(freelancers)
     }
 }
