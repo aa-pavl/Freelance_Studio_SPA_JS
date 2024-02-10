@@ -83,7 +83,7 @@ export class Router {
                           'dataTables.bootstrap4.min.js']
             },
             {
-                route: '/freelancers/create',
+                route: '/freelancers/view',
                 title: 'Фрилансер',
                 filePathTemplate: '/templates/pages/freelancers/view.html',
                 useLayout: '/templates/layout.html',
