@@ -3,6 +3,7 @@ import {Login} from "./components/auth/login";
 import {Signup} from "./components/auth/signup";
 import {Logout} from "./components/auth/logout";
 import {FreelancersList} from "./components/freelancers/freelancersList";
+import {FileUtils} from "./utils/file-utils";
 
 export class Router {
 
@@ -76,6 +77,9 @@ export class Router {
                 },
                 unload: () => {
                 },
+                styles: ['dataTables.bootstrap4.min.css'],
+                scripts: ['jquery.dataTables.min.js',
+                          'dataTables.bootstrap4.min.js']
             },
         ];
     }
@@ -102,8 +106,9 @@ export class Router {
         if (element) {
             e.preventDefault();
 
+            const curRoute = window.location.pathname;
             const url = element.href.replace(window.location.origin, '');
-            if (!url || url === '/#' || url.startsWith('javascript:void(0)')) {
+            if (!url ||(curRoute === url.replace('#','')) || url.startsWith('javascript:void(0)')) {
                 return;
             }
             console.log(url);
@@ -125,6 +130,11 @@ export class Router {
                     document.querySelector(`link[href='/css/${style}']`).remove();
                 });
             }
+            if (prevRoute.scripts && prevRoute.scripts.length > 0) {
+                prevRoute.scripts.forEach(script => {
+                    document.querySelector(`script[src='/js/${script}']`).remove();
+                });
+            }
             if (prevRoute.unload && typeof prevRoute.unload === "function") {
                 prevRoute.unload();
             }
@@ -135,12 +145,13 @@ export class Router {
         if (newRout) {
             if (newRout.styles && newRout.styles.length > 0) {
                 newRout.styles.forEach(style => {
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = '/css/' + style;
-
-                    document.head.insertBefore(link, this.adminStyleElement);
+                    FileUtils.loadPageStyle('/css/' + style, this.adminStyleElement);
                 });
+            }
+            if (newRout.scripts && newRout.scripts.length > 0) {
+                for (const script of newRout.scripts) {
+                    await FileUtils.loadPageScript('/js/' + script);
+                }
             }
             if (newRout.title) {
                 this.titlePageElement.innerText = newRout.title + ' | Freelance Studio';
