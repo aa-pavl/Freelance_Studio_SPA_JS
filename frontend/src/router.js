@@ -5,6 +5,7 @@ import {Logout} from "./components/auth/logout";
 import {FreelancersList} from "./components/freelancers/freelancers-list";
 import {FreelancersView} from "./components/freelancers/freelancers-view";
 import {FileUtils} from "./utils/file-utils";
+import {FreelancersCreate} from "./components/freelancers/freelancers-create";
 
 export class Router {
 
@@ -97,8 +98,9 @@ export class Router {
                 filePathTemplate: '/templates/pages/freelancers/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new FreelancersView(this.openNewRoute.bind(this));
+                    new FreelancersCreate(this.openNewRoute.bind(this));
                 },
+                scripts: ['bs-custom-file-input.min.js'],
             },
         ];
     }

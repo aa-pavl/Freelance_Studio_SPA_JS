@@ -30,7 +30,6 @@ export class FreelancersView {
             console.log(res_response.message);
             return alert("Возникла ошибка при запросе фрилансера. Обратитесь в поддержку.");
         }
-        console.log(res_response);
         this.showFreelancer(res_response)
     }
 
