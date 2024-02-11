@@ -45,7 +45,7 @@ export class FreelancersCreate {
             const res_response = result.response;
             if (res_response.error || !res_response || (res_response && res_response.error)) {
                 console.log(res_response.message);
-                return alert("Возникла ошибка при запросе фрилансера. Обратитесь в поддержку.");
+                return alert("Возникла ошибка при создание фрилансера. Обратитесь в поддержку.");
             }
             return this.openNewRoute('/freelancers/view?id=' + res_response.id);
 

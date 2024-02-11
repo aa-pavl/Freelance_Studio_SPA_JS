@@ -39,7 +39,7 @@ export class FreelancersList {
                 '<div class="freelancer-tools">' +
                 '<a href="/freelancers/view?id=' + freelancers[i].id + '" class="fas fa-eye"></a>' +
                 '<a href="/freelancers/edit?id=' + freelancers[i].id + '" class="fas fa-edit"></a>' +
-                '<a href="/freelancers/dalete?id=' + freelancers[i].id + '" class="fas fa-trash"></a>' +
+                '<a href="/freelancers/delete?id=' + freelancers[i].id + '" class="fas fa-trash"></a>' +
                 '</div>';
 
             recordsElement.appendChild(trElement);
