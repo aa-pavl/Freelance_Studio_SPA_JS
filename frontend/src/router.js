@@ -84,17 +84,21 @@ export class Router {
             },
             {
                 route: '/freelancers/view',
-                title: 'Фрилансер',
+                title: 'Просмостр фрилансера',
                 filePathTemplate: '/templates/pages/freelancers/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new FreelancersView();
+                    new FreelancersView(this.openNewRoute.bind(this));
                 },
-                // unload: () => {
-                // },
-                // styles: ['dataTables.bootstrap4.min.css'],
-                // scripts: ['jquery.dataTables.min.js',
-                //           'dataTables.bootstrap4.min.js']
+            },
+            {
+                route: '/freelancers/create',
+                title: 'Создание фрилансера',
+                filePathTemplate: '/templates/pages/freelancers/create.html',
+                useLayout: '/templates/layout.html',
+                load: () => {
+                    new FreelancersView(this.openNewRoute.bind(this));
+                },
             },
         ];
     }
