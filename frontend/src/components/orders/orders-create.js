@@ -54,6 +54,7 @@ export class OrdersCreate {
         });
 
         this.freelancerSelectElement = document.getElementById('freelancerSelect');
+        this.statusSelectElement = document.getElementById('statusSelect');
         this.descriptionInputElement = document.getElementById('descriptionInput');
         this.amountInputElement = document.getElementById('amountInput');
         this.scheduledCardElement = document.getElementById('scheduled-card');
@@ -117,36 +118,33 @@ export class OrdersCreate {
         return isValid;
     }
 
-    saveOrder(e) {
+    async saveOrder(e) {
         e.preventDefault();
         if (this.validateForm()) {
-            console.log('Valid');
-    //         const createData = {
-    //             name: this.nameElement.value,
-    //             lastName: this.nameLastElement.value,
-    //             email: this.emailElement.value,
-    //             level: this.levelElement.value,
-    //             education: this.educationElement.value,
-    //             location: this.locationElement.value,
-    //             skills: this.skillElement.value,
-    //             info: this.infoElement.value,
-    //         }
-    //         if (this.avatarElement.files && this.avatarElement.files.length > 0) {
-    //             createData.avatarBase64 = await FileUtils.convertFileToBase64(this.avatarElement.files[0]);
-    //         }
-    //
-    //         const result = await HttpUtils.request('/freelancers', 'POST', true, createData);
-    //         if (result.redirect) {
-    //             return this.openNewRoute(result.redirect);
-    //         }
-    //
-    //         const res_response = result.response;
-    //         if (res_response.error || !res_response || (res_response && res_response.error)) {
-    //             console.log(res_response.message);
-    //             return alert("Возникла ошибка при создание фрилансера. Обратитесь в поддержку.");
-    //         }
-    //         return this.openNewRoute('/freelancers/view?id=' + res_response.id);
-    //
+            const createData = {
+                description: this.descriptionInputElement.value,
+                deadlineDate: this.dateDeadline.toISOString(),
+                scheduledDate: this.dateScheduled.toISOString(),
+                freelancer: this.freelancerSelectElement.value,
+                status: this.statusSelectElement.value,
+                amount: parseInt(this.amountInputElement.value),
+            }
+            if (this.dateComplete) {
+                createData.completeDate = this.dateComplete.toISOString();
+            }
+
+            const result = await HttpUtils.request('/orders', 'POST', true, createData);
+            if (result.redirect) {
+                return this.openNewRoute(result.redirect);
+            }
+
+            const res_response = result.response;
+            if (res_response.error || !res_response || (res_response && res_response.error)) {
+                console.log(res_response.message);
+                return alert("Возникла ошибка при добавление заказа. Обратитесь в поддержку.");
+            }
+            return this.openNewRoute('/orders/view?id=' + res_response.id);
+
         }
     }
 
