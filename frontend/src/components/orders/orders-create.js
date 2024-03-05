@@ -23,7 +23,7 @@ export class OrdersCreate {
             },
             useCurrent: false,
         });
-        calendarScheduled.on("change.datetimepicker", function (e) {
+        calendarScheduled.on("change.datetimepicker", (e) => {
             this.dateScheduled = e.date;
             console.log(this.dateScheduled)
         });
@@ -38,8 +38,8 @@ export class OrdersCreate {
             },
             useCurrent: false,
         });
-        calendarComplete.on("change.datetimepicker", function (e) {
-            this.dateScheduled = e.date;
+        calendarComplete.on("change.datetimepicker", (e) => {
+            this.dateComplete = e.date;
         });
         calendarDeadline.datetimepicker({
             inline: true,
@@ -49,13 +49,16 @@ export class OrdersCreate {
             },
             useCurrent: false,
         });
-        calendarDeadline.on("change.datetimepicker", function (e) {
-            this.dateScheduled = e.date;
+        calendarDeadline.on("change.datetimepicker", (e) => {
+            this.dateDeadline = e.date;
         });
 
         this.freelancerSelectElement = document.getElementById('freelancerSelect');
         this.descriptionInputElement = document.getElementById('descriptionInput');
         this.amountInputElement = document.getElementById('amountInput');
+        this.scheduledCardElement = document.getElementById('scheduled-card');
+        this.completeCardElement = document.getElementById('complete-card');
+        this.deadlineCardElement = document.getElementById('deadline-card');
 
         this.getFreelancers().then();
     }
@@ -97,7 +100,19 @@ export class OrdersCreate {
             }
         }
 
+        if (this.dateScheduled) {
+            this.scheduledCardElement.classList.remove('is-invalid');
+        } else {
+            this.scheduledCardElement.classList.add('is-invalid');
+            isValid = false;
+        }
 
+        if (this.dateDeadline) {
+            this.deadlineCardElement.classList.remove('is-invalid');
+        } else {
+            this.deadlineCardElement.classList.add('is-invalid');
+            isValid = false;
+        }
 
         return isValid;
     }
@@ -105,6 +120,7 @@ export class OrdersCreate {
     saveOrder(e) {
         e.preventDefault();
         if (this.validateForm()) {
+            console.log('Valid');
     //         const createData = {
     //             name: this.nameElement.value,
     //             lastName: this.nameLastElement.value,
