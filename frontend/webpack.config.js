@@ -47,6 +47,7 @@ module.exports = {
                 {from: "./node_modules/admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css", to: "css"},
                 {from: "./node_modules/admin-lte/plugins/select2/css/select2.min.css", to: "css"},
                 {from: "./node_modules/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css", to: "css"},
+                {from: "./node_modules/admin-lte/plugins/fullcalendar/main.css", to: "css/fullcalendar.css"},
 
                 {from: "./node_modules/admin-lte/plugins/jquery/jquery.min.js", to: "js"},
                 {from: "./node_modules/admin-lte/dist/js/adminlte.min.js", to: "js"},
@@ -57,6 +58,8 @@ module.exports = {
                 {from: "./node_modules/admin-lte//plugins/moment/locale/ru.js", to: "js/moment-ru-locale.js"},
                 {from: "./node_modules/admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js", to: "js"},
                 {from: "./node_modules/admin-lte/plugins/select2/js/select2.full.min.js", to: "js"},
+                {from: "./node_modules/admin-lte//plugins/fullcalendar/main.js", to: "js/fullcalendar.js"},
+                {from: "./node_modules/admin-lte//plugins/fullcalendar/locales/ru.js", to: "js/fullcalendar-locale-ru.js"},
             ],
         }),
     ],
