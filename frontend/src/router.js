@@ -13,6 +13,7 @@ import {OrdersView} from "./components/orders/orders-view";
 import {OrdersCreate} from "./components/orders/orders-create";
 import {OrdersEdit} from "./components/orders/orders-edit";
 import {OrdersDelete} from "./components/orders/orders-delete";
+import {AuthUtils} from "./utils/auth-utils";
 
 export class Router {
 
@@ -20,6 +21,7 @@ export class Router {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
         this.adminStyleElement = document.getElementById('admin_style');
+        this.userName = null;
 
         this.initEvents();
         this.routes = [
@@ -259,6 +261,22 @@ export class Router {
                     contentBlock = document.getElementById('content-wrapper');
                     document.body.classList.add('sidebar-mini');
                     document.body.classList.add('layout-fixed');
+
+                    // if (!this.profileNameElement) {
+                        this.profileNameElement = document.getElementById('profile-name');
+                    // }
+                    if (!this.userName ) {
+                        let userInfo = AuthUtils.getAuthInfo(AuthUtils.userInfoTokenKey);
+                        if (userInfo) {
+                            let userInfoObj = JSON.parse(userInfo);
+                            userInfoObj.userInfo.name;
+                            if (userInfoObj.userInfo.name) {
+                                this.userName = userInfoObj.userInfo.name;
+                            }
+                        }
+                    }
+                    this.profileNameElement.innerText = this.userName;
+
                     this.activateMenuItem(newRout);
                 } else {
                     document.body.classList.remove('sidebar-mini');
