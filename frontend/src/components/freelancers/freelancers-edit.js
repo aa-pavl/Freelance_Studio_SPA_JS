@@ -21,15 +21,7 @@ export class FreelancersEdit {
         document.getElementById('updateButton').addEventListener('click', this.updateFreelancer.bind(this));
         bsCustomFileInput.init();
 
-        this.nameElement = document.getElementById('nameInput');
-        this.nameLastElement = document.getElementById('nameLastInput');
-        this.emailElement = document.getElementById('emailInput');
-        this.educationElement = document.getElementById('educationInput');
-        this.locationElement = document.getElementById('locationInput');
-        this.skillElement = document.getElementById('skillsInput');
-        this.infoElement = document.getElementById('infoInput');
-        this.levelElement = document.getElementById('levelSelect');
-        this.avatarElement = document.getElementById('avatarInput');
+        this.findElements();
 
         this.validations = [
             {element: this.nameElement},
@@ -40,6 +32,18 @@ export class FreelancersEdit {
             {element: this.infoElement},
             {element: this.emailElement, options: {pattern: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/}},
         ];
+    }
+
+    findElements() {
+        this.nameElement = document.getElementById('nameInput');
+        this.nameLastElement = document.getElementById('nameLastInput');
+        this.emailElement = document.getElementById('emailInput');
+        this.educationElement = document.getElementById('educationInput');
+        this.locationElement = document.getElementById('locationInput');
+        this.skillElement = document.getElementById('skillsInput');
+        this.infoElement = document.getElementById('infoInput');
+        this.levelElement = document.getElementById('levelSelect');
+        this.avatarElement = document.getElementById('avatarInput');
     }
 
 

@@ -9,13 +9,7 @@ export class Signup {
             return this.openNewRoute('/');
         }
 
-        this.nameElement = document.getElementById('name');
-        this.lastNameElement = document.getElementById('lastname');
-        this.emailElement = document.getElementById('email');
-        this.passwordElement = document.getElementById('password');
-        this.passwordRepeatElement = document.getElementById('password-repeat');
-        this.agreeElement = document.getElementById('agree');
-        this.commonErrorElement = document.getElementById('common-error');
+        this.findElements();
 
         this.validations = [
             {element: this.nameElement},
@@ -27,6 +21,16 @@ export class Signup {
         ];
 
         document.getElementById('process-button').addEventListener('click', this.signup.bind(this));
+    }
+
+    findElements() {
+        this.nameElement = document.getElementById('name');
+        this.lastNameElement = document.getElementById('lastname');
+        this.emailElement = document.getElementById('email');
+        this.passwordElement = document.getElementById('password');
+        this.passwordRepeatElement = document.getElementById('password-repeat');
+        this.agreeElement = document.getElementById('agree');
+        this.commonErrorElement = document.getElementById('common-error');
     }
 
     async signup() {

@@ -1,5 +1,4 @@
 import {HttpUtils} from "../../utils/http-utils";
-import {FileUtils} from "../../utils/file-utils";
 import {ValidationUtils} from "../../utils/validation-utils";
 
 export class OrdersCreate {
@@ -11,56 +10,38 @@ export class OrdersCreate {
         this.dateScheduled = null;
         this.dateComplete = null;
         this.dateDeadline = null;
-        const calendarScheduled = $('#calendar-scheduled');
-        const calendarComplete = $('#calendar-complete');
-        const calendarDeadline = $('#calendar-deadline');
 
-        calendarScheduled.datetimepicker({
-            // format: 'L',
+        const calendarOptions = {
             inline: true,
-            locale: 'ru',
-            icons: {
+                locale: 'ru',
+                icons: {
                 time: 'far fa-clock',
             },
             useCurrent: false,
-        });
+        }
+
+        const calendarScheduled = $('#calendar-scheduled');
+        calendarScheduled.datetimepicker(calendarOptions);
         calendarScheduled.on("change.datetimepicker", (e) => {
             this.dateScheduled = e.date;
             console.log(this.dateScheduled)
         });
-        calendarComplete.datetimepicker({
-            inline: true,
-            locale: 'ru',
-            icons: {
-                time: 'far fa-clock',
-            },
-            buttons: {
-                showClear: true,
-            },
-            useCurrent: false,
-        });
-        calendarComplete.on("change.datetimepicker", (e) => {
-            this.dateComplete = e.date;
-        });
-        calendarDeadline.datetimepicker({
-            inline: true,
-            locale: 'ru',
-            icons: {
-                time: 'far fa-clock',
-            },
-            useCurrent: false,
-        });
+
+        const calendarDeadline = $('#calendar-deadline');
+        calendarDeadline.datetimepicker(calendarOptions);
         calendarDeadline.on("change.datetimepicker", (e) => {
             this.dateDeadline = e.date;
         });
 
-        this.freelancerSelectElement = document.getElementById('freelancerSelect');
-        this.statusSelectElement = document.getElementById('statusSelect');
-        this.descriptionInputElement = document.getElementById('descriptionInput');
-        this.amountInputElement = document.getElementById('amountInput');
-        this.scheduledCardElement = document.getElementById('scheduled-card');
-        this.completeCardElement = document.getElementById('complete-card');
-        this.deadlineCardElement = document.getElementById('deadline-card');
+        calendarOptions.buttons = {showClear: true};
+        const calendarComplete = $('#calendar-complete');
+        calendarComplete.datetimepicker(calendarOptions);
+        calendarComplete.on("change.datetimepicker", (e) => {
+            this.dateComplete = e.date;
+        });
+
+
+        this.findElements();
 
         this.validations = [
             {element: this.descriptionInputElement},
@@ -70,6 +51,15 @@ export class OrdersCreate {
         ];
 
         this.getFreelancers().then();
+    }
+
+    findElements() {
+        this.freelancerSelectElement = document.getElementById('freelancerSelect');
+        this.statusSelectElement = document.getElementById('statusSelect');
+        this.descriptionInputElement = document.getElementById('descriptionInput');
+        this.amountInputElement = document.getElementById('amountInput');
+        this.scheduledCardElement = document.getElementById('scheduled-card');
+        this.deadlineCardElement = document.getElementById('deadline-card');
     }
 
     async getFreelancers() {

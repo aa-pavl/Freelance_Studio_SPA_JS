@@ -1,7 +1,4 @@
 import {HttpUtils} from "../../utils/http-utils";
-import {FileUtils} from "../../utils/file-utils";
-import config from "../../config/config";
-import {CommonUtils} from "../../utils/common-utils";
 import {ValidationUtils} from "../../utils/validation-utils";
 import {UrlUtils} from "../../utils/url-utils";
 
@@ -16,18 +13,11 @@ export class OrdersEdit {
 
         document.getElementById('updateButton').addEventListener('click', this.updateOrder.bind(this));
         this.orderOriginalData = null;
-
         this.dateScheduled = null;
         this.dateComplete = null;
         this.dateDeadline = null;
 
-        this.freelancerSelectElement = document.getElementById('freelancerSelect');
-        this.statusSelectElement = document.getElementById('statusSelect');
-        this.descriptionInputElement = document.getElementById('descriptionInput');
-        this.amountInputElement = document.getElementById('amountInput');
-        this.scheduledCardElement = document.getElementById('scheduled-card');
-        this.completeCardElement = document.getElementById('complete-card');
-        this.deadlineCardElement = document.getElementById('deadline-card');
+        this.findElements();
 
         this.validations = [
             {element: this.descriptionInputElement},
@@ -35,6 +25,13 @@ export class OrdersEdit {
         ];
 
         this.init(id).then();
+    }
+
+    findElements() {
+        this.freelancerSelectElement = document.getElementById('freelancerSelect');
+        this.statusSelectElement = document.getElementById('statusSelect');
+        this.descriptionInputElement = document.getElementById('descriptionInput');
+        this.amountInputElement = document.getElementById('amountInput');
     }
 
     async init(id) {
@@ -78,37 +75,34 @@ export class OrdersEdit {
             }
         }
 
-
-        const calendarScheduled = $('#calendar-scheduled');
-        const calendarComplete = $('#calendar-complete');
-        const calendarDeadline = $('#calendar-deadline');
-
-        calendarScheduled.datetimepicker({
-            // format: 'L',
+        const calendarOptions = {
             inline: true,
             locale: 'ru',
             icons: {
                 time: 'far fa-clock',
             },
             useCurrent: false,
-            date: order.scheduledDate,
-        });
+        };
+
+        const calendarScheduled = $('#calendar-scheduled');
+        calendarScheduled.datetimepicker(Object.assign({}, calendarOptions, {date: order.scheduledDate}));
         calendarScheduled.on("change.datetimepicker", (e) => {
             this.dateScheduled = e.date;
             console.log(this.dateScheduled)
         });
-        calendarComplete.datetimepicker({
-            inline: true,
-            locale: 'ru',
-            icons: {
-                time: 'far fa-clock',
-            },
-            buttons: {
-                showClear: true,
-            },
-            useCurrent: false,
-            date: order.completeDate,
+
+        const calendarDeadline = $('#calendar-deadline');
+        calendarDeadline.datetimepicker(Object.assign({}, calendarOptions, {date: order.deadlineDate}));
+        calendarDeadline.on("change.datetimepicker", (e) => {
+            this.dateDeadline = e.date;
         });
+
+        const calendarComplete = $('#calendar-complete');
+        calendarComplete.datetimepicker(Object.assign({}, calendarOptions, {
+            buttons: {showClear: true},
+            date: order.completeDate
+        }));
+
         calendarComplete.on("change.datetimepicker", (e) => {
             if (e.date) {
                 this.dateComplete = e.date;
@@ -118,18 +112,7 @@ export class OrdersEdit {
                 this.dateComplete = null;
             }
         });
-        calendarDeadline.datetimepicker({
-            inline: true,
-            locale: 'ru',
-            icons: {
-                time: 'far fa-clock',
-            },
-            useCurrent: false,
-            date: order.deadlineDate,
-        });
-        calendarDeadline.on("change.datetimepicker", (e) => {
-            this.dateDeadline = e.date;
-        });
+
 
     }
 
