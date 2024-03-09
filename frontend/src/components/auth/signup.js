@@ -1,5 +1,6 @@
 import {AuthUtils} from "../../utils/auth-utils";
 import {HttpUtils} from "../../utils/http-utils";
+import {ValidationUtils} from "../../utils/validation-utils";
 
 export class Signup {
     constructor(openNewRoute) {
@@ -12,14 +13,31 @@ export class Signup {
         this.lastNameElement = document.getElementById('lastname');
         this.emailElement = document.getElementById('email');
         this.passwordElement = document.getElementById('password');
-        // this.rememberMeElement = document.getElementById('password-repeat');
+        this.passwordRepeatElement = document.getElementById('password-repeat');
+        this.agreeElement = document.getElementById('agree');
         this.commonErrorElement = document.getElementById('common-error');
+
+        this.validations = [
+            {element: this.nameElement},
+            {element: this.lastNameElement},
+            {element: this.emailElement, options: {pattern: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/}},
+            {element: this.passwordElement, options: {pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/}},
+            {element: this.passwordRepeatElement, options: {compareTo: this.passwordElement.value}},
+            {element: this.agreeElement, options: {checked: true}},
+        ];
+
         document.getElementById('process-button').addEventListener('click', this.signup.bind(this));
     }
 
     async signup() {
         this.commonErrorElement.style.display = 'none';
-        if (this.validateForm()) {
+
+        for (let i = 0; i <this.validations.length; i++) {
+            if (this.validations[i].element === this.passwordRepeatElement) {
+                this.validations[i].options.compareTo = this.passwordElement.value;
+            }
+        }
+        if (ValidationUtils.validateForm(this.validations)) {
             const result = await HttpUtils.request('/signup', 'POST', false,{
                 name: this.nameElement.value,
                 lastName: this.lastNameElement.value,
@@ -36,25 +54,5 @@ export class Signup {
             AuthUtils.setAuthInfo(res_response.accessToken, res_response.refreshToken, {id: res_response.id, name: res_response.name})
             this.openNewRoute('/')
         }
-    }
-
-    validateForm() {
-        let isValid = true;
-        if (this.emailElement.value &&
-            this.emailElement.value.match(/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/)) {
-            this.emailElement.classList.remove('is-invalid');
-        } else {
-            this.emailElement.classList.add('is-invalid');
-            isValid = false;
-        }
-
-        if (this.passwordElement.value) {
-            this.passwordElement.classList.remove('is-invalid');
-        } else {
-            this.passwordElement.classList.add('is-invalid');
-            isValid = false;
-        }
-
-        return isValid;
     }
 }

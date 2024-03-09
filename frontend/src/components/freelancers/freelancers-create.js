@@ -1,5 +1,6 @@
 import {HttpUtils} from "../../utils/http-utils";
 import {FileUtils} from "../../utils/file-utils";
+import {ValidationUtils} from "../../utils/validation-utils";
 
 export class FreelancersCreate {
     constructor(openNewRoute) {
@@ -17,12 +18,22 @@ export class FreelancersCreate {
         this.infoElement = document.getElementById('infoInput');
         this.levelElement = document.getElementById('levelSelect');
         this.avatarElement = document.getElementById('avatarInput');
+
+        this.validations = [
+            {element: this.nameElement},
+            {element: this.nameLastElement},
+            {element: this.educationElement},
+            {element: this.locationElement},
+            {element: this.skillElement},
+            {element: this.infoElement},
+            {element: this.emailElement, options: {pattern: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/}},
+        ];
     }
 
 
     async saveFreelancer(e) {
         e.preventDefault();
-        if (this.validateForm()) {
+        if (ValidationUtils.validateForm(this.validations)) {
             const createData = {
                 name: this.nameElement.value,
                 lastName: this.nameLastElement.value,
@@ -50,32 +61,5 @@ export class FreelancersCreate {
             return this.openNewRoute('/freelancers/view?id=' + res_response.id);
 
         }
-    }
-
-    validateForm() {
-        let isValid = true;
-
-        if (this.emailElement.value &&
-            this.emailElement.value.match(/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/)) {
-            this.emailElement.classList.remove('is-invalid');
-        } else {
-            this.emailElement.classList.add('is-invalid');
-            isValid = false;
-        }
-
-        let textInput = [
-            this.nameElement, this.nameLastElement, this.educationElement,
-            this.locationElement, this.skillElement, this.infoElement
-        ];
-        for (let i = 0; i < textInput.length; i++) {
-            if (textInput[i].value) {
-                textInput[i].classList.remove('is-invalid');
-            } else {
-                textInput[i].classList.add('is-invalid');
-                isValid = false;
-            }
-        }
-
-        return isValid;
     }
 }

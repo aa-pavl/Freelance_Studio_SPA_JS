@@ -2,6 +2,7 @@ import {HttpUtils} from "../../utils/http-utils";
 import {FileUtils} from "../../utils/file-utils";
 import config from "../../config/config";
 import {CommonUtils} from "../../utils/common-utils";
+import {ValidationUtils} from "../../utils/validation-utils";
 
 export class FreelancersEdit {
     constructor(openNewRoute) {
@@ -28,6 +29,16 @@ export class FreelancersEdit {
         this.infoElement = document.getElementById('infoInput');
         this.levelElement = document.getElementById('levelSelect');
         this.avatarElement = document.getElementById('avatarInput');
+
+        this.validations = [
+            {element: this.nameElement},
+            {element: this.nameLastElement},
+            {element: this.educationElement},
+            {element: this.locationElement},
+            {element: this.skillElement},
+            {element: this.infoElement},
+            {element: this.emailElement, options: {pattern: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/}},
+        ];
     }
 
 
@@ -76,7 +87,7 @@ export class FreelancersEdit {
 
     async updateFreelancer(e) {
         e.preventDefault();
-        if (this.validateForm()) {
+        if (ValidationUtils.validateForm(this.validations)) {
             const changedData = {};
             if (this.nameElement.value !== this.freelancerOriginalData.name) {
                 changedData.name = this.nameElement.value;
@@ -121,35 +132,6 @@ export class FreelancersEdit {
                 }
                 return this.openNewRoute('/freelancers/view?id=' + this.freelancerOriginalData.id);
             }
-
-
         }
-    }
-
-    validateForm() {
-        let isValid = true;
-
-        if (this.emailElement.value &&
-            this.emailElement.value.match(/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/)) {
-            this.emailElement.classList.remove('is-invalid');
-        } else {
-            this.emailElement.classList.add('is-invalid');
-            isValid = false;
-        }
-
-        let textInput = [
-            this.nameElement, this.nameLastElement, this.educationElement,
-            this.locationElement, this.skillElement, this.infoElement
-        ];
-        for (let i = 0; i < textInput.length; i++) {
-            if (textInput[i].value) {
-                textInput[i].classList.remove('is-invalid');
-            } else {
-                textInput[i].classList.add('is-invalid');
-                isValid = false;
-            }
-        }
-
-        return isValid;
     }
 }
