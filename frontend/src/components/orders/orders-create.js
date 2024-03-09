@@ -1,5 +1,6 @@
-import {HttpUtils} from "../../utils/http-utils";
 import {ValidationUtils} from "../../utils/validation-utils";
+import {FreelancersService} from "../../service/freelancers-service";
+import {OrdersService} from "../../service/orders-service";
 
 export class OrdersCreate {
     constructor(openNewRoute) {
@@ -63,22 +64,16 @@ export class OrdersCreate {
     }
 
     async getFreelancers() {
-        const result = await HttpUtils.request('/freelancers');
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await FreelancersService.getFreelancers();
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
 
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && (res_response.error || !res_response.freelancers))) {
-            return alert("Возникла ошибка при запросе фрилансеров. Обратитесь в поддержку.");
-        }
-
-        const freelancers = res_response.freelancers;
-        for (let i = 0; i < freelancers.length; i++) {
+        for (let i = 0; i < response.freelancers.length; i++) {
             const option = document.createElement('option');
-            option.value = freelancers[i].id;
-            option.innerText = freelancers[i].name + " " + freelancers[i].lastName;
+            option.value = response.freelancers[i].id;
+            option.innerText = response.freelancers[i].name + " " + response.freelancers[i].lastName;
             this.freelancerSelectElement.appendChild(option);
         }
         $(this.freelancerSelectElement).select2({
@@ -119,18 +114,12 @@ export class OrdersCreate {
                 createData.completeDate = this.dateComplete.toISOString();
             }
 
-            const result = await HttpUtils.request('/orders', 'POST', true, createData);
-            if (result.redirect) {
-                return this.openNewRoute(result.redirect);
+            const response = await OrdersService.createOrders(createData);
+            if (response.error) {
+                alert(response.error);
+                return response.redirect ? this.openNewRoute(response.redirect) : null;
             }
-
-            const res_response = result.response;
-            if (res_response.error || !res_response || (res_response && res_response.error)) {
-                console.log(res_response.message);
-                return alert("Возникла ошибка при добавление заказа. Обратитесь в поддержку.");
-            }
-            return this.openNewRoute('/orders/view?id=' + res_response.id);
-
+            return this.openNewRoute('/orders/view?id=' + response.id);
         }
     }
 }

@@ -1,6 +1,6 @@
 import {AuthUtils} from "../../utils/auth-utils";
-import {HttpUtils} from "../../utils/http-utils";
 import {ValidationUtils} from "../../utils/validation-utils";
+import {AuthService} from "../../service/auth-service";
 
 export class Signup {
     constructor(openNewRoute) {
@@ -42,21 +42,21 @@ export class Signup {
             }
         }
         if (ValidationUtils.validateForm(this.validations)) {
-            const result = await HttpUtils.request('/signup', 'POST', false,{
+            const signupResult = await AuthService.signUp({
                 name: this.nameElement.value,
                 lastName: this.lastNameElement.value,
                 email: this.emailElement.value,
                 password: this.passwordElement.value,
-            })
+            });
 
-            const res_response = result.response;
-            if (result.error || !res_response ||
-                (res_response && (!res_response.accessToken|| !res_response.refreshToken|| !res_response.id|| !res_response.name))) {
-                this.commonErrorElement.style.display = 'block';
-                return;
+            if (signupResult) {
+                AuthUtils.setAuthInfo(signupResult.accessToken, signupResult.refreshToken, {
+                    id: signupResult.id,
+                    name: signupResult.name
+                });
+                return this.openNewRoute('/');
             }
-            AuthUtils.setAuthInfo(res_response.accessToken, res_response.refreshToken, {id: res_response.id, name: res_response.name})
-            this.openNewRoute('/')
+            this.commonErrorElement.style.display = 'block';
         }
     }
 }

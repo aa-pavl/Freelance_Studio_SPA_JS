@@ -1,5 +1,5 @@
-import {HttpUtils} from "../../utils/http-utils";
 import {CommonUtils} from "../../utils/common-utils";
+import {OrdersService} from "../../service/orders-service";
 
 export class OrdersList {
     constructor(openNewRoute) {
@@ -8,34 +8,27 @@ export class OrdersList {
     }
 
     async getOrders() {
-        const result = await HttpUtils.request('/orders');
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await OrdersService.getOrders();
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
-
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && (res_response.error || !res_response.orders))) {
-            return alert("Возникла ошибка при запросе заказов. Обратитесь в поддержку.");
-        }
-        this.showRecords(res_response.orders)
+        this.showRecords(response.orders)
     }
 
     showRecords(orders) {
         const recordsElement = document.getElementById('records');
         for (let i = 0; i < orders.length; i++) {
             const trElement = document.createElement('tr');
+            const statusInfo = CommonUtils.getStatusInfo(orders[i].status);
+
             trElement.insertCell().innerText = orders[i].number;
             trElement.insertCell().innerText = orders[i].owner.name + ' ' + orders[i].owner.lastName;
             trElement.insertCell().innerHTML = '<a href="/freelancers/view?id=' + orders[i].freelancer.id + '">' +
                 orders[i].freelancer.name + ' ' + orders[i].freelancer.lastName + '</a>';
-
             trElement.insertCell().innerText = (new Date(orders[i].scheduledDate)).toLocaleString('ru-RU');
             trElement.insertCell().innerText = (new Date(orders[i].deadlineDate)).toLocaleString('ru-RU');
-
-            const statusInfo = CommonUtils.getStatusInfo(orders[i].status);
             trElement.insertCell().innerHTML = '<span class="badge badge-' + statusInfo.color + '">' + statusInfo.name + '</span>';
-
             trElement.insertCell().innerText = orders[i].completeDate ? (new Date(orders[i].completeDate)).toLocaleString('ru-RU') : '';
             trElement.insertCell().innerHTML = CommonUtils.generateGridToolColumn('orders', orders[i].id);
 

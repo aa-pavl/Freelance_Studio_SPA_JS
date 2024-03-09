@@ -1,6 +1,6 @@
-import {HttpUtils} from "../../utils/http-utils";
 import config from "../../config/config";
 import {CommonUtils} from "../../utils/common-utils";
+import {FreelancersService} from "../../service/freelancers-service";
 
 export class FreelancersList {
     constructor(openNewRoute) {
@@ -9,17 +9,12 @@ export class FreelancersList {
     }
 
     async getFreelancers() {
-        const result = await HttpUtils.request('/freelancers');
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await FreelancersService.getFreelancers();
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
-
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && (res_response.error || !res_response.freelancers))) {
-            return alert("Возникла ошибка при запросе фрилансеров. Обратитесь в поддержку.");
-        }
-        this.showRecords(res_response.freelancers)
+        this.showRecords(response.freelancers);
     }
 
     showRecords(freelancers) {

@@ -1,5 +1,5 @@
-import {HttpUtils} from "../utils/http-utils";
 import config from "../config/config";
+import {OrdersService} from "../service/orders-service";
 
 export class Dashboard {
     constructor(openNewRoute) {
@@ -8,18 +8,14 @@ export class Dashboard {
     }
 
     async getOrders() {
-        const result = await HttpUtils.request('/orders');
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await OrdersService.getOrders();
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
 
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && (res_response.error || !res_response.orders))) {
-            return alert("Возникла ошибка при запросе заказов. Обратитесь в поддержку.");
-        }
-        this.loadOrdersInfo(res_response.orders)
-        this.loadCalendarInfo(res_response.orders)
+        this.loadOrdersInfo(response.orders)
+        this.loadCalendarInfo(response.orders)
     }
 
     loadOrdersInfo(orders) {
@@ -41,30 +37,27 @@ export class Dashboard {
                 color = 'gray';
             }
             if (orders[i].scheduledDate) {
-                const scheduledDate = new Date(orders[i].scheduledDate);
                 prepareEvents.push({
                     title: orders[i].freelancer.name + " " + orders[i].freelancer.lastName + " выполняет заказ " + orders[i].number,
-                    start: scheduledDate,
+                    start: new Date(orders[i].scheduledDate),
                     backgroundColor: color ? color : '#00c0ef',
                     borderColor: color ? color : '#00c0ef',
                     allDay: true
                 },)
             }
             if (orders[i].deadlineDate) {
-                const deadlineDate = new Date(orders[i].deadlineDate);
                 prepareEvents.push({
                     title: "Дедлайн заказа " + orders[i].number,
-                    start: deadlineDate,
+                    start: new Date(orders[i].deadlineDate),
                     backgroundColor: color ? color : '#f39c12',
                     borderColor: color ? color : '#f39c12',
                     allDay: true
                 },)
             }
             if (orders[i].completeDate) {
-                const completeDate = new Date(orders[i].completeDate);
                 prepareEvents.push({
                     title: "Заказа " + orders[i].number + " выполнен " +  orders[i].freelancer.name,
-                    start: completeDate,
+                    start: new Date(orders[i].completeDate),
                     backgroundColor: color ? color : '#00a65a',
                     borderColor: color ? color : '#00a65a',
                     allDay: true
@@ -72,8 +65,7 @@ export class Dashboard {
             }
         }
 
-        const calendarElement = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarElement, {
+        (new FullCalendar.Calendar(document.getElementById('calendar'), {
             headerToolbar: {
                 left  : 'prev,next today',
                 center: 'title',
@@ -83,9 +75,7 @@ export class Dashboard {
             locale: 'ru',
             themeSystem: 'bootstrap',
             events: prepareEvents,
-        });
-
-        calendar.render();
+        })).render();
     }
 
 }

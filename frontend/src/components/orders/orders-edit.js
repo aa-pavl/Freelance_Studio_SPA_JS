@@ -1,6 +1,7 @@
-import {HttpUtils} from "../../utils/http-utils";
 import {ValidationUtils} from "../../utils/validation-utils";
 import {UrlUtils} from "../../utils/url-utils";
+import {OrdersService} from "../../service/orders-service";
+import {FreelancersService} from "../../service/freelancers-service";
 
 export class OrdersEdit {
     constructor(openNewRoute) {
@@ -46,20 +47,14 @@ export class OrdersEdit {
     }
 
     async getOrder(id) {
-        const result = await HttpUtils.request('/orders/' + id);
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await OrdersService.getOrder(id);
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
 
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && res_response.error)) {
-            console.log(res_response.message);
-            return alert("Возникла ошибка при запросе заказа. Обратитесь в поддержку.");
-        }
-
-        this.orderOriginalData = res_response;
-        return res_response;
+        this.orderOriginalData = response.order;
+        return response.order;
     }
 
     showOrder(order) {
@@ -117,23 +112,17 @@ export class OrdersEdit {
     }
 
     async getFreelancers(curFreelancerId) {
-        const result = await HttpUtils.request('/freelancers');
-
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
+        const response = await FreelancersService.getFreelancers();
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
 
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && (res_response.error || !res_response.freelancers))) {
-            return alert("Возникла ошибка при запросе фрилансеров. Обратитесь в поддержку.");
-        }
-
-        const freelancers = res_response.freelancers;
-        for (let i = 0; i < freelancers.length; i++) {
+        for (let i = 0; i < response.freelancers.length; i++) {
             const option = document.createElement('option');
-            option.value = freelancers[i].id;
-            option.innerText = freelancers[i].name + " " + freelancers[i].lastName;
-            if (curFreelancerId === freelancers[i].id) {
+            option.value = response.freelancers[i].id;
+            option.innerText = response.freelancers[i].name + " " + response.freelancers[i].lastName;
+            if (curFreelancerId === response.freelancers[i].id) {
                 option.selected = true;
             }
             this.freelancerSelectElement.appendChild(option);
@@ -172,15 +161,10 @@ export class OrdersEdit {
 
             console.log(changedData)
             if (Object.keys(changedData).length > 0) {
-                const result = await HttpUtils.request('/orders/' + this.orderOriginalData.id, 'PUT', true, changedData);
-                if (result.redirect) {
-                    return this.openNewRoute(result.redirect);
-                }
-
-                const res_response = result.response;
-                if (res_response.error || !res_response || (res_response && res_response.error)) {
-                    console.log(res_response.message);
-                    return alert("Возникла ошибка при редактирование заказа. Обратитесь в поддержку.");
+                const response = await OrdersService.updateOrder(this.orderOriginalData.id, changedData);
+                if (response.error) {
+                    alert(response.error);
+                    return response.redirect ? this.openNewRoute(response.redirect) : null;
                 }
                 return this.openNewRoute('/orders/view?id=' + this.orderOriginalData.id);
             }

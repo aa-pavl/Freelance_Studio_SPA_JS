@@ -1,5 +1,5 @@
-import {HttpUtils} from "../../utils/http-utils";
 import {UrlUtils} from "../../utils/url-utils";
+import {FreelancersService} from "../../service/freelancers-service";
 
 export class FreelancersDelete {
     constructor(openNewRoute) {
@@ -13,15 +13,10 @@ export class FreelancersDelete {
     }
 
     async deleteFreelancer(id) {
-        const result = await HttpUtils.request('/freelancers/' + id, 'DELETE', true);
-        if (result.redirect) {
-            return this.openNewRoute(result.redirect);
-        }
-
-        const res_response = result.response;
-        if (res_response.error || !res_response || (res_response && res_response.error)) {
-            console.log(res_response.message);
-            return alert("Возникла ошибка при удаление фрилансера. Обратитесь в поддержку.");
+        const response = await FreelancersService.deleteFreelancer(id);
+        if (response.error) {
+            alert(response.error);
+            return response.redirect ? this.openNewRoute(response.redirect) : null;
         }
         return this.openNewRoute('/freelancers');
     }
